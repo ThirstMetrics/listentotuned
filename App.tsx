@@ -16,6 +16,7 @@ import authService from './src/services/authService';
 import { useAuthStore } from './src/stores/authStore';
 import RootNavigator from './src/navigation/RootNavigator';
 import { ThemeProvider } from './src/theme';
+import downloadManager from './src/services/downloadManagerService';
 
 const TunedDarkTheme = {
   ...DefaultTheme,
@@ -31,7 +32,7 @@ const TunedDarkTheme = {
   },
 };
 
-const linking = {
+const linking: any = {
   prefixes: ['tuned://', 'https://gettuned.app'],
   config: {
     screens: {
@@ -82,7 +83,7 @@ function App() {
     async function prepare() {
       // Add any async initialization here (load fonts, cached data, etc.)
       // Minimum splash display time for branding
-      await new Promise((resolve) => setTimeout(resolve, 800));
+      await new Promise<void>((resolve) => setTimeout(resolve, 800));
       setIsAppReady(true);
     }
     prepare();
@@ -96,6 +97,14 @@ function App() {
     });
     return unsubscribe;
   }, []);
+
+  // Start download queue processor
+  useEffect(() => {
+    if (isAppReady) {
+      downloadManager.startProcessing();
+      return () => downloadManager.stopProcessing();
+    }
+  }, [isAppReady]);
 
   if (!isAppReady || !isPlayerReady) {
     return (

@@ -9,6 +9,8 @@
 import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
 
+import RNFS from 'react-native-fs';
+
 import type { Episode } from '../types/podcast';
 import { mmkvStorage } from './mmkvStorage';
 
@@ -147,22 +149,30 @@ export const useDownloadStore = create<DownloadState & DownloadActions>()(
 
       cancelDownload: (episodeId) =>
         set((state) => {
-          const { [episodeId]: _, ...remainingDownloads } = state.downloads;
+          const remainingDownloads = { ...state.downloads };
+          delete remainingDownloads[episodeId];
           return {
             downloads: remainingDownloads,
             downloadQueue: state.downloadQueue.filter((id) => id !== episodeId),
           };
         }),
 
-      removeDownload: (episodeId) =>
+      removeDownload: (episodeId) => {
+        const entry = get().downloads[episodeId];
+        if (entry?.filePath) {
+          RNFS.unlink(entry.filePath).catch(() => {
+            // File may already be gone — ignore
+          });
+        }
         set((state) => {
-          // TODO: Also delete the file from disk via a file-system service
-          const { [episodeId]: _, ...remainingDownloads } = state.downloads;
+          const remainingDownloads = { ...state.downloads };
+          delete remainingDownloads[episodeId];
           return {
             downloads: remainingDownloads,
             downloadQueue: state.downloadQueue.filter((id) => id !== episodeId),
           };
-        }),
+        });
+      },
 
       // -- Queries ------------------------------------------------------------
 

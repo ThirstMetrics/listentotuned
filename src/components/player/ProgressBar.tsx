@@ -15,7 +15,6 @@ import React, { useCallback, useRef, useState } from 'react';
 import {
   GestureResponderEvent,
   LayoutChangeEvent,
-  PanResponder,
   StyleSheet,
   Text,
   View,
@@ -100,8 +99,6 @@ const ProgressBar: React.FC<ProgressBarProps> = ({
 
   const onLayout = useCallback((e: LayoutChangeEvent) => {
     trackWidth.current = e.nativeEvent.layout.width;
-    // Measure pageX for the track container
-    e.nativeEvent.target;
   }, []);
 
   const handleTouchStart = useCallback(

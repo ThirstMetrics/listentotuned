@@ -32,6 +32,10 @@ export interface EpisodeCardProps {
   onDownload?: () => void;
   /** 0-1 float representing how much of the episode has been played. */
   playProgress?: number;
+  /** Download status for the download button. Defaults to 'none'. */
+  downloadStatus?: 'none' | 'downloading' | 'downloaded';
+  /** Download progress 0-1. Only used when downloadStatus is 'downloading'. */
+  downloadProgress?: number;
 }
 
 // ---------------------------------------------------------------------------
@@ -78,6 +82,8 @@ const EpisodeCard: React.FC<EpisodeCardProps> = ({
   onPlay,
   onDownload,
   playProgress = 0,
+  downloadStatus = 'none',
+  downloadProgress = 0,
 }) => {
   const artworkUri = episode.artworkUrl ?? podcast.artworkUrl;
   const hasProgress = playProgress > 0 && playProgress < 1;
@@ -136,8 +142,8 @@ const EpisodeCard: React.FC<EpisodeCardProps> = ({
         )}
         {onDownload != null && (
           <DownloadButton
-            status="none"
-            progress={0}
+            status={downloadStatus}
+            progress={downloadProgress}
             onPress={onDownload}
           />
         )}

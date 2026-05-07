@@ -11,13 +11,13 @@ import axios, {
   InternalAxiosRequestConfig,
   AxiosResponse,
 } from 'axios';
-import { MMKV } from 'react-native-mmkv';
+import { createMMKV } from 'react-native-mmkv';
 
 // ---------------------------------------------------------------------------
 // MMKV Storage (shared key-value store for tokens)
 // ---------------------------------------------------------------------------
 
-const storage = new MMKV({ id: 'tuned-auth' });
+const storage = createMMKV({ id: 'tuned-auth' });
 
 const AUTH_TOKEN_KEY = 'auth_token';
 const REFRESH_TOKEN_KEY = 'refresh_token';
@@ -29,7 +29,7 @@ const REFRESH_TOKEN_KEY = 'refresh_token';
 /** Override this at build time via .env / react-native-config. */
 const BASE_URL =
   (globalThis as any).__TUNED_API_BASE_URL__ ??
-  'https://tuned-api.azurewebsites.net/api/v1';
+  'https://phpstack-1449472-6223187.cloudwaysapps.com/api';
 
 const DEFAULT_TIMEOUT_MS = 15_000;
 
@@ -58,7 +58,7 @@ function setAuthToken(token: string | null): void {
   if (token) {
     storage.set(AUTH_TOKEN_KEY, token);
   } else {
-    storage.delete(AUTH_TOKEN_KEY);
+    storage.remove(AUTH_TOKEN_KEY);
   }
 }
 
@@ -69,7 +69,7 @@ function setRefreshToken(token: string | null): void {
   if (token) {
     storage.set(REFRESH_TOKEN_KEY, token);
   } else {
-    storage.delete(REFRESH_TOKEN_KEY);
+    storage.remove(REFRESH_TOKEN_KEY);
   }
 }
 
@@ -77,8 +77,8 @@ function setRefreshToken(token: string | null): void {
  * Clear all auth tokens (used during sign-out).
  */
 function clearTokens(): void {
-  storage.delete(AUTH_TOKEN_KEY);
-  storage.delete(REFRESH_TOKEN_KEY);
+  storage.remove(AUTH_TOKEN_KEY);
+  storage.remove(REFRESH_TOKEN_KEY);
 }
 
 // ---------------------------------------------------------------------------

@@ -12,7 +12,7 @@
  * respects the user's opt-in preference stored in MMKV.
  */
 
-import { MMKV } from 'react-native-mmkv';
+import { createMMKV } from 'react-native-mmkv';
 import { Platform } from 'react-native';
 import { apiClient } from './apiClient';
 
@@ -20,7 +20,7 @@ import { apiClient } from './apiClient';
 // Storage
 // ---------------------------------------------------------------------------
 
-const storage = new MMKV({ id: 'tuned-analytics' });
+const storage = createMMKV({ id: 'tuned-analytics' });
 
 const PENDING_EVENTS_KEY = 'pending_events';
 const DEVICE_ID_KEY = 'hashed_device_id';
@@ -144,7 +144,7 @@ function loadPersisted(): void {
     }
   } catch {
     // Corrupt data -- discard.
-    storage.delete(PENDING_EVENTS_KEY);
+    storage.remove(PENDING_EVENTS_KEY);
   }
 }
 
@@ -154,7 +154,7 @@ function persistBatch(): void {
     if (eventBatch.length > 0) {
       storage.set(PENDING_EVENTS_KEY, JSON.stringify(eventBatch));
     } else {
-      storage.delete(PENDING_EVENTS_KEY);
+      storage.remove(PENDING_EVENTS_KEY);
     }
   } catch {
     // Silently fail -- analytics should never crash the app.

@@ -201,9 +201,6 @@ const LibraryScreen: React.FC = () => {
   );
 
   const downloads = useDownloadStore((state) => state.downloads);
-  const getDownloadedEpisodes = useDownloadStore(
-    (state) => state.getDownloadedEpisodes,
-  );
   const removeDownload = useDownloadStore((state) => state.removeDownload);
 
   // -- Derived data ----------------------------------------------------------

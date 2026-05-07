@@ -22,6 +22,8 @@ import type {
   SleepTimer,
 } from '../types/player';
 import { mmkvStorage } from './mmkvStorage';
+import { useDownloadStore } from './downloadStore';
+import downloadService from '../services/downloadService';
 
 // ---------------------------------------------------------------------------
 // State shape
@@ -83,8 +85,6 @@ interface PlayerActions {
 
 const SKIP_FORWARD_SECONDS = 30;
 const SKIP_BACKWARD_SECONDS = 15;
-/** If the user taps "previous" within this many seconds, restart the track. */
-const RESTART_THRESHOLD_SECONDS = 3;
 
 const initialProgress: PlayerProgress = {
   position: 0,
@@ -112,10 +112,21 @@ const initialState: PlayerState = {
 // ---------------------------------------------------------------------------
 
 /** Build a react-native-track-player Track object from a QueueItem. */
-function queueItemToTrack(item: QueueItem) {
+async function queueItemToTrack(item: QueueItem) {
+  // Check if episode is downloaded locally
+  const isDownloaded = useDownloadStore.getState().isDownloaded(item.episode.id);
+  let url = item.episode.audioUrl;
+
+  if (isDownloaded) {
+    const localPath = await downloadService.getLocalPath(item.episode.id);
+    if (localPath) {
+      url = `file://${localPath}`;
+    }
+  }
+
   return {
     id: item.episode.id,
-    url: item.episode.audioUrl,
+    url,
     title: item.episode.title,
     artist: item.podcastTitle || 'Unknown podcast',
     artwork: item.episode.artworkUrl ?? item.podcastArtworkUrl,
@@ -146,7 +157,7 @@ export const usePlayerStore = create<PlayerState & PlayerActions>()(
         });
         try {
           await TrackPlayer.reset();
-          await TrackPlayer.add(queueItemToTrack(item));
+          await TrackPlayer.add(await queueItemToTrack(item));
           if (item.episode.playPosition > 0) {
             await TrackPlayer.seekTo(item.episode.playPosition);
           }
@@ -296,7 +307,7 @@ export const usePlayerStore = create<PlayerState & PlayerActions>()(
 
         try {
           await TrackPlayer.reset();
-          await TrackPlayer.add(queueItemToTrack(nextItem));
+          await TrackPlayer.add(await queueItemToTrack(nextItem));
           await TrackPlayer.setRate(playbackSpeed);
           await TrackPlayer.play();
         } catch (error) {

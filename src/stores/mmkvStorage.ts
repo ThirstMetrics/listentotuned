@@ -6,11 +6,11 @@
  * which matters for persisting player state on every position update.
  */
 
-import { MMKV } from 'react-native-mmkv';
+import { createMMKV } from 'react-native-mmkv';
 import type { StateStorage } from 'zustand/middleware';
 
 // Single MMKV instance shared across all stores (uses a namespaced key per store)
-export const mmkv = new MMKV({ id: 'tuned-app-storage' });
+export const mmkv = createMMKV({ id: 'tuned-app-storage' });
 
 /**
  * Zustand-compatible storage adapter that delegates to MMKV.
@@ -28,6 +28,6 @@ export const mmkvStorage: StateStorage = {
   },
 
   removeItem(name: string): void {
-    mmkv.delete(name);
+    mmkv.remove(name);
   },
 };

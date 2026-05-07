@@ -10,6 +10,10 @@ const router = Router();
 // ---------------------------------------------------------------------------
 router.get('/recent', requireAuth, async (req: Request, res: Response, next: NextFunction) => {
   try {
+    if (!pool) {
+      res.json({ data: [], pagination: { limit: 50, offset: 0 } });
+      return;
+    }
     const authReq = req as AuthenticatedRequest;
     const limit = parseInt((req.query.limit as string) || '50', 10);
     const offset = parseInt((req.query.offset as string) || '0', 10);
@@ -38,6 +42,10 @@ router.get('/recent', requireAuth, async (req: Request, res: Response, next: Nex
 router.get('/:id', async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { id } = req.params;
+    if (!pool) {
+      res.status(404).json({ error: 'Episode not found (database not configured)' });
+      return;
+    }
     const result = await pool.query('SELECT * FROM episodes WHERE id = $1', [id]);
 
     if (result.rows.length === 0) {
@@ -67,6 +75,11 @@ router.post('/:id/progress', requireAuth, async (req: Request, res: Response, ne
     }
 
     const completed = duration > 0 && position / duration >= 0.95;
+
+    if (!pool) {
+      res.status(503).json({ error: 'Database not configured' });
+      return;
+    }
 
     // Resolve internal user id from firebase_uid
     const userResult = await pool.query(
@@ -104,6 +117,11 @@ router.get('/:id/progress', requireAuth, async (req: Request, res: Response, nex
   try {
     const authReq = req as AuthenticatedRequest;
     const episodeId = req.params.id;
+
+    if (!pool) {
+      res.json({ data: null });
+      return;
+    }
 
     const result = await pool.query(
       `SELECT lh.*

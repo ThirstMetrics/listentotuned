@@ -2,7 +2,7 @@
  * Tuned Podcast Player - Player Domain Types
  */
 
-import type { Episode, Podcast } from './podcast';
+import type { Episode } from './podcast';
 
 // ---------------------------------------------------------------------------
 // Playback State

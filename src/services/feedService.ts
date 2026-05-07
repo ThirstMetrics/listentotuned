@@ -47,11 +47,11 @@ type CustomItem = {
 const parser = new Parser<CustomFeed, CustomItem>({
   customFields: {
     feed: [
-      ['itunes:author', 'itunes:author'],
-      ['itunes:image', 'itunes:image'],
-      ['itunes:summary', 'itunes:summary'],
-      ['itunes:explicit', 'itunes:explicit'],
-      ['itunes:category', 'itunes:category'],
+      ['itunes:author', 'itunes:author'] as any,
+      ['itunes:image', 'itunes:image'] as any,
+      ['itunes:summary', 'itunes:summary'] as any,
+      ['itunes:explicit', 'itunes:explicit'] as any,
+      ['itunes:category', 'itunes:category'] as any,
     ],
     item: [
       ['itunes:duration', 'itunes:duration'],
@@ -226,7 +226,7 @@ async function parseFeed(
     id: feedUrl, // RSS feeds don't have a canonical numeric ID; use URL as key
     title: feed.title ?? '',
     author:
-      (feed['itunes:author'] as string) ?? feed.creator ?? feed.managingEditor ?? '',
+      (feed['itunes:author'] as string) ?? (feed as any).creator ?? (feed as any).managingEditor ?? '',
     description:
       (feed['itunes:summary'] as string) ?? feed.description ?? '',
     artworkUrl: extractImageUrl(feed['itunes:image'], feed.image?.url),

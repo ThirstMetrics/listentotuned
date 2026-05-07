@@ -11,7 +11,7 @@
 
 import React from 'react';
 import { StyleSheet, Text, View, type ViewStyle, type TextStyle } from 'react-native';
-import { darkColors, brandColors } from '../../theme/colors';
+import { brandColors } from '../../theme/colors';
 import { borderRadius, spacing } from '../../theme/spacing';
 import { fontFamilies, fontSizes, fontWeights, lineHeights } from '../../theme/typography';
 

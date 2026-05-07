@@ -1,6 +1,6 @@
 {
   "name": "Tuned",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "private": true,
   "scripts": {
     "android": "react-native run-android",
@@ -23,13 +23,14 @@
     "react-native-fs": "^2.20.0",
     "react-native-gesture-handler": "^2.30.0",
     "react-native-mmkv": "^4.1.2",
-    "react-native-reanimated": "^4.2.1",
+    "react-native-reanimated": "^4.2.2",
     "react-native-safe-area-context": "^5.6.2",
     "react-native-screens": "^4.23.0",
     "react-native-svg": "^15.15.3",
     "react-native-track-player": "^4.1.2",
     "react-native-vector-icons": "^10.3.0",
     "react-native-video": "^6.19.0",
+    "react-native-worklets": "^0.7.4",
     "rss-parser": "^3.13.0",
     "zustand": "^5.0.11"
   },

@@ -121,9 +121,9 @@ export function createTheme(
   const baseColors = mode === 'dark' ? darkColors : lightColors;
   const colorOverrides =
     mode === 'dark' ? overrides?.colors?.dark : overrides?.colors?.light;
-  const resolvedColors = colorOverrides
-    ? ({ ...baseColors, ...colorOverrides } as ThemeColors)
-    : baseColors;
+  const resolvedColors = (colorOverrides
+    ? { ...baseColors, ...colorOverrides }
+    : baseColors) as ThemeColors;
 
   // Merge typography overrides.
   const resolvedTypography = overrides?.typography

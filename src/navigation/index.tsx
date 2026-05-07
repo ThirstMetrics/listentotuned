@@ -58,7 +58,7 @@ const tunedDarkTheme: Theme = {
  *   tuned://settings
  *   tuned://auth
  */
-const linking = {
+const linking: any = {
   prefixes: ['tuned://', 'https://tuned.app'],
   config: linkingScreenConfig,
 };

@@ -47,6 +47,10 @@ router.get('/trending', async (req: Request, res: Response, next: NextFunction) 
 // ---------------------------------------------------------------------------
 router.get('/categories', async (req: Request, res: Response, next: NextFunction) => {
   try {
+    if (!pool) {
+      res.json({ data: [] });
+      return;
+    }
     const result = await pool.query(
       `SELECT DISTINCT unnest(categories) AS category FROM podcasts ORDER BY category`
     );
@@ -65,11 +69,17 @@ router.get('/:id', async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { id } = req.params;
 
-    // Try local database first
-    const dbResult = await pool.query('SELECT * FROM podcasts WHERE id = $1', [id]);
-    if (dbResult.rows.length > 0) {
-      res.json({ data: dbResult.rows[0] });
-      return;
+    // Try local database first (may fail if id format mismatches schema)
+    if (pool) {
+      try {
+        const dbResult = await pool.query('SELECT * FROM podcasts WHERE id = $1', [id]);
+        if (dbResult.rows.length > 0) {
+          res.json({ data: dbResult.rows[0] });
+          return;
+        }
+      } catch {
+        // DB lookup failed (e.g. numeric id vs UUID column) — fall through to Podcast Index
+      }
     }
 
     // Fall back to Podcast Index
@@ -95,18 +105,24 @@ router.get('/:id/episodes', async (req: Request, res: Response, next: NextFuncti
     const limit = parseInt((req.query.limit as string) || '50', 10);
     const offset = parseInt((req.query.offset as string) || '0', 10);
 
-    // Try local database first
-    const dbResult = await pool.query(
-      `SELECT * FROM episodes
-       WHERE podcast_id = $1
-       ORDER BY pub_date DESC
-       LIMIT $2 OFFSET $3`,
-      [id, limit, offset]
-    );
+    // Try local database first (may fail if id format mismatches schema)
+    if (pool) {
+      try {
+        const dbResult = await pool.query(
+          `SELECT * FROM episodes
+           WHERE podcast_id = $1
+           ORDER BY pub_date DESC
+           LIMIT $2 OFFSET $3`,
+          [id, limit, offset]
+        );
 
-    if (dbResult.rows.length > 0) {
-      res.json({ data: dbResult.rows, pagination: { limit, offset } });
-      return;
+        if (dbResult.rows.length > 0) {
+          res.json({ data: dbResult.rows, pagination: { limit, offset } });
+          return;
+        }
+      } catch {
+        // DB lookup failed — fall through to Podcast Index
+      }
     }
 
     // Fall back to Podcast Index

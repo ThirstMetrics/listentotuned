@@ -48,7 +48,7 @@ async function sha1(input: string): Promise<string> {
   ) {
     const encoder = new TextEncoder();
     const data = encoder.encode(input);
-    const hashBuffer = await globalThis.crypto.subtle.digest('SHA-1', data);
+    const hashBuffer = await globalThis.crypto.subtle.digest('SHA-1', data.buffer as ArrayBuffer);
     const hashArray = Array.from(new Uint8Array(hashBuffer));
     return hashArray.map((b) => b.toString(16).padStart(2, '0')).join('');
   }

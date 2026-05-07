@@ -82,7 +82,8 @@ const SearchScreen: React.FC = () => {
     if (trendingPodcasts.length === 0) {
       fetchTrending();
     }
-  }, []);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [fetchTrending]);
 
   // -------------------------------------------------------------------
   // Handlers

@@ -14,6 +14,9 @@ use_frameworks! :linkage => :static
 target 'Tuned' do
   config = use_native_modules!
 
+  # NitroModules (required by react-native-mmkv, not auto-linked)
+  pod 'NitroModules', :path => '../node_modules/react-native-nitro-modules'
+
   use_react_native!(
     :path => config[:reactNativePath],
     # An absolute path to your application root.

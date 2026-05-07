@@ -2,10 +2,10 @@
  * MMKV storage adapter for Zustand persistence
  */
 
-import { MMKV } from 'react-native-mmkv';
+import { createMMKV } from 'react-native-mmkv';
 import { StateStorage } from 'zustand/middleware';
 
-export const storage = new MMKV({
+export const storage = createMMKV({
   id: 'tuned-app-storage',
 });
 
@@ -22,7 +22,7 @@ export const zustandMMKVStorage: StateStorage = {
     storage.set(name, value);
   },
   removeItem: (name: string): void => {
-    storage.delete(name);
+    storage.remove(name);
   },
 };
 
@@ -48,6 +48,6 @@ export const TypedStorage = {
   setObject: <T>(key: string, value: T): void => {
     storage.set(key, JSON.stringify(value));
   },
-  delete: (key: string): void => storage.delete(key),
+  delete: (key: string): void => { storage.remove(key); },
   clearAll: (): void => storage.clearAll(),
 };

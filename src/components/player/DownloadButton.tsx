@@ -10,8 +10,7 @@
 import React from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { darkColors } from '../../theme/colors';
-import { fontFamilies, fontSizes, fontWeights, lineHeights } from '../../theme/typography';
-import { spacing } from '../../theme/spacing';
+import { fontFamilies, fontWeights } from '../../theme/typography';
 
 // ---------------------------------------------------------------------------
 // Types

@@ -35,7 +35,7 @@ import EmptyState from '../../components/common/EmptyState';
 
 // Theme
 import { darkColors } from '../../theme/colors';
-import { spacing, borderRadius, componentPadding } from '../../theme/spacing';
+import { spacing, borderRadius } from '../../theme/spacing';
 import {
   fontFamilies,
   fontSizes,

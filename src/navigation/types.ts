@@ -128,4 +128,4 @@ export const linkingScreenConfig = {
     Settings: 'settings',
     Auth: 'auth',
   },
-} as const;
+} as const satisfies { screens: Record<string, any> };
